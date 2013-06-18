@@ -1,0 +1,57 @@
+If you have no idea what this is talking about, watch this:
+http://channel9.msdn.com/Events/TechEd/NorthAmerica/2013/MDC-B302
+
+And if you want to play with the real thing, go through this hands on lab:
+http://channel9.msdn.com/Events/TechEd/NorthAmerica/2013/MDC-H310
+
+================================================================================
+
+This must be run on a DHCP server as the Powershell V4 DSC infrastructure
+will provide all the remoting capability, so I didn't implement that as part
+of this provider.
+
+If you have the Powershell V4 preview, look at Example_Powershell_V4.txt instead.
+
+Configuration:
+
+1.	Copy the Module to one of the folders in $env:PsModulePath
+
+2. 	Put the ApplyConfiguraion.ps1 and Configuration.ps1 files in a folder
+	  together and change to that folder
+
+3. 	Edit Configuration.ps1 to contain the DHCP scope info you want to
+   	create/modify.
+
+4.	Run the following command to apply the configuration:
+  	
+		.\Configuration.ps1 | Foreach-Object {
+	 		.\ApplyConfiguration.ps1 -ProviderName DhcpV4ScopeDSC -Configuration $_
+	 	}
+
+5.	You can also import the provider directly and play with the 3 commands in it:
+   	
+		Import-Module DhcpV4ScopeDSC
+	 	.\Configuration.ps1 | Foreach-Object {
+			Test-TargetResource @_
+		}
+		
+		Get-TargetResource -ScopeId 10.10.10.0
+
+		.\Configuration.ps1 | Foreach-Object {
+			Set-TargetResource @_
+		}
+		
+6.	There is also debug information that is output when the module makes a
+		change to the DHCP configuration:
+		
+		$DebugPreference = "continue"
+		.\Configuration.ps1 | Foreach-Object {
+	 		.\ApplyConfiguration.ps1 -ProviderName DhcpV4ScopeDSC -Configuration $_
+	 	}
+		
+		You can edit your DHCP configuration to make some of the properties not
+		match and see that only the incorrect settings are changed when the module
+		is run.
+		
+7.	To delete the subnets, create a configuration that specifies the required
+		parameters along with Ensure = "Absent" and re-apply the configuration.
