@@ -24,20 +24,20 @@ Configuration:
 
 4.	Run the following command to apply the configuration:
   	
-		.\Configuration.ps1 | Foreach-Object {
+		.\DhcpScopeConfiguration.ps1 | Foreach-Object {
 	 		.\ApplyConfiguration.ps1 -ProviderName DhcpV4ScopeDSC -Configuration $_
 	 	}
 
 5.	You can also import the provider directly and play with the 3 commands in it:
    	
 		Import-Module DhcpV4ScopeDSC
-	 	.\Configuration.ps1 | Foreach-Object {
+	 	.\DhcpScopeConfiguration.ps1 | Foreach-Object {
 			Test-TargetResource @_
 		}
 		
 		Get-TargetResource -ScopeId 10.10.10.0
 
-		.\Configuration.ps1 | Foreach-Object {
+		.\DhcpScopeConfiguration.ps1 | Foreach-Object {
 			Set-TargetResource @_
 		}
 		
@@ -45,7 +45,7 @@ Configuration:
 		change to the DHCP configuration:
 		
 		$DebugPreference = "continue"
-		.\Configuration.ps1 | Foreach-Object {
+		.\DhcpScopeConfiguration.ps1 | Foreach-Object {
 	 		.\ApplyConfiguration.ps1 -ProviderName DhcpV4ScopeDSC -Configuration $_
 	 	}
 		
