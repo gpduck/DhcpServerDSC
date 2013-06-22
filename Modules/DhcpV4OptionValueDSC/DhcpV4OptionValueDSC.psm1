@@ -104,11 +104,11 @@ function Set-TargetResource {
 				#do nothing
 			} else {
 				Write-Debug "Updating option $OptionId with value(s) $($Value -join ', ')"
-				Set-DhcpServerV4OptionValue -Value $Value @PSBoundParameters
+				Set-DhcpServerV4OptionValue -Value $Value -Force @PSBoundParameters
 			}
 		} else {
 			Write-Debug "Adding option $OptionId with value(s) $($Value -join ', ')"
-			Set-DhcpServerV4OptionValue -Value $Value @PSBoundParameters
+			Set-DhcpServerV4OptionValue -Value $Value -Force @PSBoundParameters
 		}
 	} else {
 		if($OptionValue) {
