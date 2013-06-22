@@ -6,52 +6,50 @@ http://channel9.msdn.com/Events/TechEd/NorthAmerica/2013/MDC-H310
 
 ================================================================================
 
-This must be run on a DHCP server as the Powershell V4 DSC infrastructure
+This must be run locally on a 2012 DHCP server as the Powershell V4 DSC infrastructure
 will provide all the remoting capability, so I didn't implement that as part
-of this provider.
+of this provider/testing framework.
 
 If you have the Powershell V4 preview, look at Example_Powershell_V4.txt instead.
 
 Configuration:
 
-1.	Copy the Module to one of the folders in $env:PsModulePath
+1.	Copy the Modules to one of the folders in $env:PsModulePath
 
-2. 	Put the ApplyConfiguraion.ps1 and Configuration.ps1 files in a folder
-	  together and change to that folder
+2.	Put the FakeFramework.ps1, SampleConfiguration.ps1, and SampleConfigurationData.ps1
+	  files together somewhere and change to that folder (eg c:\temp)
 
-3. 	Edit Configuration.ps1 to contain the DHCP scope info you want to
-   	create/modify.
+3.	Load the fake DSC framework by dot-sourcing FakeFramework.ps1:
 
-4.	Run the following command to apply the configuration:
-  	
-		.\DhcpScopeConfiguration.ps1 | Foreach-Object {
-	 		.\ApplyConfiguration.ps1 -ProviderName DhcpV4ScopeDSC -Configuration $_
-	 	}
+	. .\FakeFramework.ps1
 
-5.	You can also import the provider directly and play with the 3 commands in it:
-   	
-		Import-Module DhcpV4ScopeDSC
-	 	.\DhcpScopeConfiguration.ps1 | Foreach-Object {
-			Test-TargetResource @_
-		}
-		
-		Get-TargetResource -ScopeId 10.10.10.0
+4.	Load the configuration function by dot-sourcing SampleConfiguration.ps1:
 
-		.\DhcpScopeConfiguration.ps1 | Foreach-Object {
-			Set-TargetResource @_
-		}
-		
-6.	There is also debug information that is output when the module makes a
-		change to the DHCP configuration:
-		
-		$DebugPreference = "continue"
-		.\DhcpScopeConfiguration.ps1 | Foreach-Object {
-	 		.\ApplyConfiguration.ps1 -ProviderName DhcpV4ScopeDSC -Configuration $_
-	 	}
-		
-		You can edit your DHCP configuration to make some of the properties not
-		match and see that only the incorrect settings are changed when the module
-		is run.
-		
-7.	To delete the subnets, create a configuration that specifies the required
-		parameters along with Ensure = "Absent" and re-apply the configuration.
+	. .\SampleConfiguration.ps1
+
+5.	Set your debug preference so you can see what is going on:
+
+	$DebugPreference = "continue"
+
+6.	Attempt to apply the configuration to the computer:
+
+	DhcpServers -ConfigurationData (.\SampleConfigurationData.ps1)
+
+7.	This will do nothing, unless your computer is named "DhcpServer1".
+	  Edit SampleConfigurationData.ps1 and change one of the computer
+	  names at the end to match your computer name.  It must be 2012
+	  and already have the DhcpServer and RSAT-Dhcp roles installed.
+
+8.	Now re-apply the configuration and it should apply the sample data
+	  to your computer:
+
+	DhcpServers -ConfigurationData (.\SampleConfigurationData.ps1)
+
+9.	After it configures DHCP, you can go in and mess things up and then
+	  re-rapply the configuration (#8) and it will fix it all back. Note
+	  that it only controls the settings that are explicitly configured
+	  in SampleConfigurationData and SampleConfiguration, so if something
+	  else is changed, it won't be set back.
+
+10.	You can also add a subnet with a scope ID of 10.0.104.0 and the sample
+	  configuration will delete it for you.
