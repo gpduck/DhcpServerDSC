@@ -181,7 +181,7 @@
 			}
 		}
 		
-		#We someone keeps adding a 4th floor, but we don't have one, so we want to make sure it gets deleted
+		#Someone keeps adding a 4th floor, but we don't have one, so we want to make sure it gets deleted
 		DhcpV4ScopeDSC "PhantomFloor" @{
 			Ensure = "Absent";
 			ScopeId = "10.0.104.0";
