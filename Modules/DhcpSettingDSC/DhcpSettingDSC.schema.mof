@@ -1,0 +1,27 @@
+
+[version("1.0.0"), FriendlyName("DhcpSettingDSC")]
+class DhcpSettingDSC : MSFT_BaseResourceConfiguration
+{
+	[write] uint32 AuditLog_DiskCheckInterval;
+	[write] boolean AuditLog_Enable;
+	[write] uint32 AuditLog_MaxMBFileSize;
+	[write] uint32 AuditLog_MinMBDiskSpace;
+	[write] string AuditLog_Path;
+	[write] uint32 Database_BackupInterval;
+	[write] string Database_BackupPath;
+	[write] uint32 Database_CleanupInterval;
+	[write] string Database_FileName;
+	[write] boolean Setting_ActivatePolicies;
+	[write] uint32 Setting_ConflictDetectionAttempts;
+	[write] boolean Setting_NapEnabled;
+	[write,ValueMap{"Full","Restricted","NoAccess"},Values{"Full","Restricted","NoAccess"}] string Setting_NpsUnreachableAction;
+	[write] boolean V4DnsSetting_DeleteDnsRROnLeaseExpiry;
+	[write,ValueMap{"Always","Never","OnClientRequest"},Values{"Always","Never","OnClientRequest"}] string V4DnsSetting_DynamicUpdates;
+	[write] boolean V4DnsSetting_NameProtection;
+	[write] boolean V4DnsSetting_UpdateDnsRRForOlderClients;
+	[write] boolean V4FilterList_Allow;
+	[write] boolean V4FilterList_Deny;
+	[write] boolean V6DnsSetting_DeleteDnsRROnLeaseExpiry;
+	[write,ValueMap{"Always","Never","OnClientRequest"},Values{"Always","Never","OnClientRequest"}] string V6DnsSetting_DynamicUpdates;
+	[write] boolean V6DnsSetting_NameProtection;
+};

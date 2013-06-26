@@ -1,0 +1,20 @@
+
+[version("1.0.0"), FriendlyName("DhcpV4ScopeDSC")]
+class DhcpV4ScopeDSC : MSFT_BaseResourceConfiguration
+{
+	[key] string ScopeId;
+	[write] string Name;
+	[write] string StartRange;
+	[write] string EndRange;
+	[write] string SubnetMask;
+	[write,ValueMap{"Present","Absent"},Values{"Present","Absent"}] string Ensure;
+	[write] uint16 Delay;
+	[write] string Description;
+	[write] string LeaseDuration;
+	[write] uint32 MaxBootpClients;
+	[write] boolean NapEnable;
+	[write] string NapProfile;
+	[write,ValueMap{"Active","Inactive"},Values{"Active","Inactive"}] string State;
+	[write] string SuperscopeName;
+	[write,ValueMap{"Dhcp","Bootp","Both"},Values{"Dhcp","Bootp","Both"}] string Type;
+};

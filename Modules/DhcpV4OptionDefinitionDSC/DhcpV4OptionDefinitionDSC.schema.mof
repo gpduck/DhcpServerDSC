@@ -1,0 +1,13 @@
+
+[version("1.0.0"), FriendlyName("DhcpV4OptionDefinitionDSC")]
+class DhcpV4OptionDefinitionDSC : MSFT_BaseResourceConfiguration
+{
+	[key] uint32 OptionId;
+	[key] string VendorClass;
+	[write,ValueMap{"Present","Absent"},Values{"Present","Absent"}] string Ensure;
+	[write] string Name;
+	[write] string Description;
+	[write,ValueMap{"Byte","Word","DWord","DWordDWord","IPv4Address","String","BinaryData","EncapsulatedData"},Values{"Byte","Word","DWord","DWordDWord","IPv4Address","String","BinaryData","EncapsulatedData"}] string Type;
+	[write] boolean MultiValued;
+	[write,ArrayType("Indexed")] string DefaultValue[];
+};

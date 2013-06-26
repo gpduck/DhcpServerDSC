@@ -1,0 +1,13 @@
+
+[version("1.0.0"), FriendlyName("DhcpV4OptionValueDSC")]
+class DhcpV4OptionValueDSC : MSFT_BaseResourceConfiguration
+{
+	[key] uint32 OptionId;
+	[key] string ScopeId;
+	[key] string PolicyName;
+	[key] string ReservedIP;
+	[key] string VendorClass;
+	[key] string UserClass;
+	[write,ValueMap{"Present","Absent"},Values{"Present","Absent"}] string Ensure;
+	[write,ArrayType("Indexed")] string Value[];
+};

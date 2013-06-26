@@ -27,6 +27,8 @@ function Get-TargetResource {
 		[ValidateSet("Present","Absent")]
 		[String]$Ensure = "Present"
 	)
+	$PSBoundParameters.Remove("Debug") > $null
+	$PSBoundParameters.Remove("Verbose") > $null
 	$PSBoundParameters.Remove("Ensure") > $null
 	$OptionDef = Get-DhcpServerV4OptionDefinition @PsBoundParameters -ErrorAction SilentlyContinue
 	if($OptionDef) {
@@ -35,7 +37,7 @@ function Get-TargetResource {
 		$EnsureResult = "Absent"
 	}
 	
-	[PsCustomObject]@{
+	@{
 		Ensure=$EnsureResult;
 		OptionId=$OptionDef.OptionId;
 		Name=$OptionDef.Name;
@@ -78,6 +80,8 @@ function Set-TargetResource {
 		[ValidateSet("Present","Absent")]
 		[String]$Ensure = "Present"
 	)
+	$PSBoundParameters.Remove("Debug") > $null
+	$PSBoundParameters.Remove("Verbose") > $null
 	$PSBoundParameters.Remove("Ensure") > $null
 	$OptionDef = Get-DhcpServerV4OptionDefinition -OptionId $OptionId -VendorClass $VendorClass -ErrorAction SilentlyContinue
 	if($Ensure -eq "Present") {
@@ -149,6 +153,8 @@ function Test-TargetResource {
 		[ValidateSet("Present","Absent")]
 		[String]$Ensure = "Present"
 	)
+	$PSBoundParameters.Remove("Debug") > $null
+	$PSBoundParameters.Remove("Verbose") > $null
 	$PSBoundParameters.Remove("Ensure") > $null
 	$OptionDef = Get-DhcpServerV4OptionDefinition -OptionId $OptionId -VendorClass $VendorClass -ErrorAction SilentlyContinue
 	if($Ensure -eq "Present") {

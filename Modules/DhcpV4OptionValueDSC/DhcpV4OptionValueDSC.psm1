@@ -32,7 +32,7 @@ function Get-TargetResource {
 		[Parameter(Mandatory=$False)]
 		[ValidateNotNull()]
 		[ValidateNotNullOrEmpty()]
-		[System.Net.IPAddress]$ReservedIP,
+		[System.String]$ReservedIP,
 		
 		[Parameter(Mandatory=$False)]
 		[System.String]$VendorClass,
@@ -44,14 +44,18 @@ function Get-TargetResource {
 		[String]$Ensure = "Present"
 	)
 	$PSBoundParameters.Remove("Ensure") > $null
-	$OptionValue = Get-DhcpServerV4OptionValue @PsBoundParameters -ErrorAction SilentlyContinue
+	try {
+		$OptionValue = Get-DhcpServerV4OptionValue @PsBoundParameters -ErrorAction SilentlyContinue
+	} catch {
+		$OptionValue = $null
+	}
 	if($OptionValue) {
 		$EnsureResult = "Present"
 	} else {
 		$EnsureResult = "Absent"
 	}
 	
-	[PsCustomObject]@{
+	@{
 		Ensure=$EnsureResult;
 		OptionId=$OptionValue.OptionId;
 		Value=$OptionValue.Value;
@@ -68,8 +72,7 @@ function Set-TargetResource {
 
 		[Parameter(Mandatory=$False)]
 		[ValidateNotNull()]
-		[ValidateNotNullOrEmpty()]
-		[System.Net.IPAddress]$ReservedIP,
+		[System.String]$ReservedIP,
 
 		[Parameter(Mandatory=$False)]
 		[ValidateNotNull()]
@@ -93,9 +96,18 @@ function Set-TargetResource {
 		[ValidateSet("Present","Absent")]
 		[String]$Ensure = "Present"
 	)
+	$PSBoundParameters.Remove("Debug") > $null
+	$PSBoundParameters.Remove("Verbose") > $null
 	$PSBoundParameters.Remove("Ensure") > $null
 	$PSBoundParameters.Remove("Value") > $null
-	$OptionValue = Get-DhcpServerV4OptionValue @PSBoundParameters -ErrorAction SilentlyContinue
+	if($ReservedIP -eq [String]::Empty) {
+		$PSBoundParameters.Remove("ReservedIP") > $Null
+	}
+	try {
+		$OptionValue = Get-DhcpServerV4OptionValue @PsBoundParameters -ErrorAction SilentlyContinue
+	} catch {
+		$OptionValue = $null
+	}
 	
 	if($Ensure -eq "Present") {
 		#Ensure Present, create or update as needed
@@ -125,8 +137,7 @@ function Test-TargetResource {
 
 		[Parameter(Mandatory=$False)]
 		[ValidateNotNull()]
-		[ValidateNotNullOrEmpty()]
-		[System.Net.IPAddress]$ReservedIP,
+		[System.String]$ReservedIP,
 
 		[Parameter(Mandatory=$False)]
 		[ValidateNotNull()]
@@ -150,9 +161,18 @@ function Test-TargetResource {
 		[ValidateSet("Present","Absent")]
 		[String]$Ensure = "Present"
 	)
+	$PSBoundParameters.Remove("Debug") > $null
+	$PSBoundParameters.Remove("Verbose") > $null
 	$PSBoundParameters.Remove("Ensure") > $null
 	$PSBoundParameters.Remove("Value") > $null
-	$OptionValue = Get-DhcpServerV4OptionValue @PSBoundParameters -ErrorAction SilentlyContinue
+	if($ReservedIP -eq [String]::Empty) {
+		$PSBoundParameters.Remove("ReservedIP") > $Null
+	}
+	try {
+		$OptionValue = Get-DhcpServerV4OptionValue @PsBoundParameters -ErrorAction SilentlyContinue
+	} catch {
+		$OptionValue = $null
+	}
 	
 	if($Ensure -eq "Present") {
 		#Ensure Present, create or update as needed

@@ -1,0 +1,10 @@
+
+[version("1.0.0"), FriendlyName("DhcpV4ClassDSC")]
+class DhcpV4ClassDSC : MSFT_BaseResourceConfiguration
+{
+	[key] string Name;
+	[key,ValueMap{"Vendor","User"},Values{"Vendor","User"}]  string Type;
+	[write,ValueMap{"Present","Absent"},Values{"Present","Absent"}] string Ensure;
+	[write] string Value;
+	[write] string Description;
+};

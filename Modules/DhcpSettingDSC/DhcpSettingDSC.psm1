@@ -31,7 +31,7 @@ function Get-TargetResource {
 	$V6DnsSetting = Get-DhcpServerV6DnsSetting
 	
 	
-	[PsCustomObject]@{
+	@{
 		AuditLog_Enable = $AuditLog.Enable;
 		AuditLog_Path = $AuditLog.Path;
 		AuditLog_DiskCheckInterval = $AuditLog.DiskCheckInterval;

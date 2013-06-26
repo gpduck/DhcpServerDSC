@@ -30,7 +30,7 @@ function Get-TargetResource {
 		$EnsureResult = "Absent"
 	}
 	
-	[PsCustomObject]@{
+	@{
 		Ensure=$EnsureResult;
 		Name=$Scope.Name;
 		Prefix=$Scope.Prefix;

@@ -34,11 +34,11 @@ function Get-TargetResource {
 		$EnsureResult = "Absent"
 	}
 	
-	[PsCustomObject]@{
+	@{
 		Ensure=$EnsureResult;
 		Name=$Class.Name;
 		Type=$Class.Type;
-		Data=$Class.AsciiData;
+		Value=$Class.AsciiData;
 		Description=$Class.Description;
 	}
 }
@@ -55,7 +55,7 @@ function Set-TargetResource {
 
 		[Parameter(Mandatory=$False)]
 		[ValidateNotNullOrEmpty()]
-		[System.String]$Data,
+		[System.String]$Value,
 
 		[Parameter(Mandatory=$False)]
 		[System.String]$Description,
@@ -63,6 +63,8 @@ function Set-TargetResource {
 		[ValidateSet("Present","Absent")]
 		[System.String]$Ensure = "Present"
 	)
+	$PSBoundParameters.Remove("Debug") > $null
+	$PSBoundParameters.Remove("Verbose") > $null
 	$Class = Get-DhcpServerV4Class -Name $Name -Type $Type -ErrorAction SilentlyContinue
 	if($Ensure -eq "Present") {
 		#Ensure Present, create or update as needed
@@ -78,8 +80,10 @@ function Set-TargetResource {
 		} else {
 			#Remove ensure as it's not a scope property
 			$PSBoundParameters.Remove("Ensure") > $null
+			#Value is really called -Data, so remove it from splatting
+			$PSBoundParameters.Remove("Value") > $null
 			Write-Debug "Adding $Type class $Name with $($UpdateParams.Keys -join ', ')"
-			Add-DhcpServerV4Class @PsBoundParameters
+			Add-DhcpServerV4Class -Data $Value @PsBoundParameters
 		}
 	} else {
 		#Ensure Absent, delete if exists
@@ -102,7 +106,7 @@ function Test-TargetResource {
 
 		[Parameter(Mandatory=$False)]
 		[ValidateNotNullOrEmpty()]
-		[System.String]$Data,
+		[System.String]$Value,
 
 		[Parameter(Mandatory=$False)]
 		[System.String]$Description,
@@ -111,6 +115,8 @@ function Test-TargetResource {
 		[System.String]$Ensure = "Present"
 	)
 	$Class = Get-DhcpServerV4Class -Name $Name -Type $Type -ErrorAction SilentlyContinue
+	$PSBoundParameters.Remove("Debug") > $null
+	$PSBoundParameters.Remove("Verbose") > $null
 	if($Ensure -eq "Present") {
 		#Ensure Present, create or update as needed
 		if($Class) {
@@ -155,7 +161,7 @@ function GetUpdateParams {
 	
 	$BoundParameters.Keys | ForEach-Object {
 		$ParameterName = $_
-		if($ParameterName -eq "Data") {
+		if($ParameterName -eq "Value") {
 			$ClassParameterName = "AsciiData"
 		} else {
 			$ClassParameterName = $ParameterName

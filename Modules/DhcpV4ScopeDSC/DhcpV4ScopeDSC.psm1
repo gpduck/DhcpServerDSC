@@ -88,6 +88,8 @@ function Set-TargetResource {
 		[ValidateSet("Dhcp","Bootp","Both")]
 		[String]$Type
 	)
+	$PSBoundParameters.Remove("Debug") > $null
+	$PSBoundParameters.Remove("Verbose") > $null
 	$Scope = Get-DhcpServerV4Scope -ScopeId $ScopeId -ErrorAction SilentlyContinue
 	if($Ensure -eq "Present") {
 		#Ensure Present, create or update as needed
@@ -103,7 +105,15 @@ function Set-TargetResource {
 			#Calculate the scope ID and make sure it is valid for $StartRange + $SubnetMask
 			$PSBoundParameters.Remove("Ensure") > $null
 			$PSBoundParameters.Remove("ScopeId") > $null
-			Add-DhcpServerV4Scope @PSBoundParameters
+			try {
+				Add-DhcpServerV4Scope @PSBoundParameters -ErrorAction Stop
+			} catch {
+				$ErrorParams = New-Object Text.StringBuilder
+				$PSBoundParameters.Keys | %{
+					$ErrorParams.Append("${_}: $($PSBoundParameters[$_]), ")
+				}
+				Write-Error "Failed to add scope $ScopeId with $($ErrorParams.ToString())"
+			}
 		}
 	} else {
 		#Ensure Absent, delete if exists
@@ -150,6 +160,8 @@ function Test-TargetResource {
 		[ValidateSet("Dhcp","Bootp","Both")]
 		[String]$Type
 	)
+	$PSBoundParameters.Remove("Debug") > $null
+	$PSBoundParameters.Remove("Verbose") > $null
 	$Scope = Get-DhcpServerV4Scope -ScopeId $ScopeId -ErrorAction SilentlyContinue
 	if($Ensure -eq "Present") {
 		#Ensure Present, create or update as needed
