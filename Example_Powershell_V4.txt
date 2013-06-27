@@ -1,2 +1,47 @@
-I'll update this with instructions to get it working on the community preview
-once that is released (June 26-ish).
+NOTE: This must be run on the 2012 R2 Preview: http://bit.ly/1cofnpt
+
+Copy the modules to C:\Windows\System32\WindowsPowerShell\v1.0\Modules\PSDesiredStateConfiguration\PSProviders
+
+Your folder should look like this now:
+DhcpSettingDSC
+DhcpV4ClassDSC
+DhcpV4OptionDefinitionDSC
+DhcpV4OptionValueDSC
+DhcpV4ScopeDSC
+DhcpV6ScopeDSC
+MSFT_ArchiveResource
+MSFT_EnvironmentResource
+MSFT_GroupResource
+MSFT_LogResource
+MSFT_PackageResource
+MSFT_ProcessResource
+MSFT_RegistryResource
+MSFT_RoleResource
+MSFT_ScriptResource
+MSFT_ServiceResource
+MSFT_UserResource
+
+Copy the SampleConfiguration and SampleData files to a working folder, I'll use c:\temp.
+
+Run the following commands in PowerShell:
+===========================
+#Change to your work directory
+cd c:\temp
+
+#This creates a configuration command named DhcpServers (as defined in the file)
+. .\SampleConfiguration.ps1
+
+#This compiles a MOF file based on the DhcpServers configuration using the
+#  values provided in SampleData.ps1
+#  You will get a bunch of errors here because of the way I named my modules, but
+#  the process will still work.  I've opened a connect bug for this here: http://bit.ly/19vvx46
+DhcpServers -ConfigurationData (.\SampleData.ps1)
+
+#This applies the configuration to the nodes defined in the configuration,
+#  the sample files define only "localhost"
+Start-DscConfiguration -Path .\DhcpServers | Wait-Job | Receive-Job
+===========================
+
+Now you can open the Dhcp management console and see all the scopes that were created.
+
+Note that there is a limitation on the size of the MOF file that can be submitted (50kb?) and the sample configuration comes very close to this limit.  I'm not sure if there is a way to configure this maximum.
