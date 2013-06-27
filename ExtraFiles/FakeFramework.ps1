@@ -6,7 +6,8 @@ function Configuration {
 	)
 	$ConfigTemplate = @"
 	function Global:$Name {{
-		param( `$ConfigurationData )
+		param( `$ConfigurationData, [switch]`$WhatIf )
+		`$ConfigWhatIf = `$WhatIf
 		`$StarNode = `$ConfigurationData.AllNodes | ?{{`$_.NodeName -eq "*"}}
 		`$AllNodes = `$ConfigurationData.AllNodes | ?{{`$_.NodeName -ne "*"}} | %{{
 			`$NamedNode = `$_
@@ -55,7 +56,11 @@ function DhcpV4SettingDSC {
 	$Provider = Import-Module DhcpSettingDSC -Force -AsCustomObject -ErrorAction Stop
 	Write-Debug "[DSC Fake] Invoking DhcpSettingDSC on $Name"
 	if(-not (&$Provider."Test-TargetResource".Script @Parameters) ) {
-		&$Provider."Set-TargetResource".Script @Parameters
+		if($ConfigWhatIf) {
+			Write-Host "DhcpSetting would change something"
+		} else {
+			&$Provider."Set-TargetResource".Script @Parameters
+		}
 	}
 }
 
@@ -69,7 +74,11 @@ function DhcpV4ClassDSC {
 	$Provider = Import-Module DhcpV4ClassDSC -Force -AsCustomObject -ErrorAction Stop
 	Write-Debug "[DSC Fake] Invoking DhcpV4ClassDSC on $Name"
 	if(-not (&$Provider."Test-TargetResource".Script @Parameters) ) {
-		&$Provider."Set-TargetResource".Script @Parameters
+		if($ConfigWhatIf) {
+			Write-Host "DhcpV4Class would change something"
+		} else {
+			&$Provider."Set-TargetResource".Script @Parameters
+		}
 	}
 }
 
@@ -83,7 +92,11 @@ function DhcpV4OptionDefinitionDSC {
 	$Provider = Import-Module DhcpV4OptionDefinitionDSC -Force -AsCustomObject -ErrorAction Stop
 	Write-Debug "[DSC Fake] Invoking DhcpV4OptionDefinitionDSC on $Name"
 	if(-not (&$Provider."Test-TargetResource".Script @Parameters) ) {
-		&$Provider."Set-TargetResource".Script @Parameters
+		if($ConfigWhatIf) {
+			Write-Host "DhcpV4OptionDefinition would change something"
+		} else {
+			&$Provider."Set-TargetResource".Script @Parameters
+		}
 	}
 }
 
@@ -97,7 +110,11 @@ function DhcpV4OptionValueDSC {
 	$Provider = Import-Module DhcpV4OptionValueDSC -Force -AsCustomObject -ErrorAction Stop
 	Write-Debug "[DSC Fake] Invoking DhcpV4OptionValueDSC on $Name"
 	if(-not (&$Provider."Test-TargetResource".Script @Parameters) ) {
-		&$Provider."Set-TargetResource".Script @Parameters
+		if($ConfigWhatIf) {
+			Write-Host "DhcpV4OptionValue would change something" -ForegroundColor Green
+		} else {
+			&$Provider."Set-TargetResource".Script @Parameters
+		}
 	}
 }
 
@@ -110,8 +127,13 @@ function DhcpV4ScopeDSC {
 	
 	$Provider = Import-Module DhcpV4ScopeDSC -Force -AsCustomObject -ErrorAction Stop
 	Write-Debug "[DSC Fake] Invoking DhcpV4ScopeDSC on $Name"
+
 	if(-not (&$Provider."Test-TargetResource".Script @Parameters) ) {
-		&$Provider."Set-TargetResource".Script @Parameters
+		if($ConfigWhatIf) {
+			Write-Host "DhcpV4Scope would change something" -ForegroundColor Green
+		} else {
+			&$Provider."Set-TargetResource".Script @Parameters
+		}
 	}
 }
 
@@ -124,7 +146,12 @@ function DhcpV6ScopeDSC {
 	
 	$Provider = Import-Module DhcpV6ScopeDSC -Force -AsCustomObject -ErrorAction Stop
 	Write-Debug "[DSC Fake] Invoking DhcpV6ScopeDSC on $Name"
+
 	if(-not (&$Provider."Test-TargetResource".Script @Parameters) ) {
-		&$Provider."Set-TargetResource".Script @Parameters
+		if($ConfigWhatIf) {
+			Write-Host "DhcpV6Scope would change something" -ForegroundColor Green
+		} else {
+			&$Provider."Set-TargetResource".Script @Parameters
+		}
 	}
 }
